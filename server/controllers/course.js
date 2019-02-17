@@ -16,6 +16,7 @@ var fn_getCourseDirection = async (ctx, next) => {
   if ( allCourseDirection ) {
     result.data = allCourseDirection;
     result.success = true;
+    result.code = 1;
   } else {
     result.message = courseCode.FAIL_GET_COURSE_DIRECTION;
   }
@@ -41,8 +42,32 @@ var fn_queryAllCourseCategory = async (ctx, next) => {
   if ( allCourseDirection ) {
     result.data = allCourseDirection;
     result.success = true;
+    result.code = 1;
   } else {
     result.message = courseCode.FAIL_GET_COURSE_DIRECTION;
+  }
+
+  ctx.body = result;
+};
+
+/**
+ * 获取课程所有难度
+ */
+var fn_queryCourseDifficult = async (ctx, next) => {
+  let result = {
+    success: false,
+    message: '',
+    data: null,
+    code: ''
+  };
+
+  let allCourseDifficult = await courseService.queryCourseDifficult();
+  if ( allCourseDifficult ) {
+    result.data = allCourseDifficult;
+    result.success = true;
+    result.code = 1;
+  } else {
+    result.message = courseCode.FAIL_GET_COURSE_Difficult;
   }
 
   ctx.body = result;
@@ -51,4 +76,5 @@ var fn_queryAllCourseCategory = async (ctx, next) => {
 module.exports = {
   'GET /course/getCourseDirection': fn_getCourseDirection,
   'GET /course/queryAllCourseCategory': fn_queryAllCourseCategory,
+  'GET /course/queryCourseDifficult': fn_queryCourseDifficult,
 };

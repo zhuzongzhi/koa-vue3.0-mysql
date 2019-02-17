@@ -17,6 +17,10 @@ const course = {
   async queryAllCourseCategory(courseDirectionId) {
     return await courseModel.queryAllCourseCategory(courseDirectionId);
   },
+
+  async queryCourseDifficult() {
+    return await courseModel.queryCourseDifficult();
+  },
 };
 
 module.exports = course;

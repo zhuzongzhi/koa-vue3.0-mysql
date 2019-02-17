@@ -17,7 +17,7 @@
                     <span v-for="(direction, index) in allDirection" :key="index">
                         <el-button @click="choseDirectionIdx = index"
                                 :class="{isActive: index === choseDirectionIdx}">
-                            {{direction}}
+                            {{direction.name}}
                         </el-button>
                     </span>
                 </div>
@@ -97,7 +97,7 @@
     data() {
         return {
           keyword: '',
-          allDirection: ['全部', '前端开发', '后端开发', '移动开发', '算法&数学', '前沿技术', '云计算&大数据', ],
+          allDirection: [],
           allCategory: ['全部', '微服务', '区块链', '以太坊', '人工智能', '机器学习', ],
           allDifficult: ['全部', '入门', '初级', '中级', '高级'],
           choseDirectionIdx: 0,
@@ -182,6 +182,39 @@
         }
     },
     methods: {
+      async init() {
+        let vm = this;
+
+        await vm.queryCourseDirection();
+        await vm.queryAllCourseCategory();
+        await vm.queryCourseDifficult();
+      },
+
+      async queryCourseDirection() {
+        let vm = this;
+
+        this.$store
+          .dispatch("QueryCourseDirection")
+          .then((res) => {
+            console.log('res', res);
+            let data = res.data;
+            data.forEach(item => {
+              vm.allDirection.push(item);
+            });
+          })
+          .catch(() => {
+
+          });
+      },
+
+      async queryAllCourseCategory() {
+
+      },
+
+      async queryCourseDifficult() {
+
+      },
+
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
       },
@@ -189,7 +222,31 @@
         console.log(`当前页: ${val}`);
       },
 
+      /*handleLogin() {
+        this.$refs.loginForm.validate(valid => {
+          if (valid) {
+            this.loading = true;
+            this.$store
+              .dispatch("Login", this.loginForm)
+              .then(() => {
+                this.loading = false;
+                this.$router.push({ path: "/" });
+              })
+              .catch(() => {
+                this.loading = false;
+              });
+          } else {
+            console.log("error submit!!");
+            return false;
+          }
+        });
+      }*/
 
+    },
+    mounted() {
+      let vm = this;
+
+      vm.init();
     }
   }
 </script>
