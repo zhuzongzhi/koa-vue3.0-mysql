@@ -15,23 +15,30 @@
                 <div class="rowTwo">
                     <span>方向：</span>
                     <span v-for="(direction, index) in allDirection" :key="index">
-                        <el-button>{{direction}}</el-button>
+                        <el-button @click="choseDirectionIdx = index"
+                                :class="{isActive: index === choseDirectionIdx}">
+                            {{direction}}
+                        </el-button>
                     </span>
-
-
                 </div>
 
                 <div class="rowThree">
                     <span>分类：</span>
                     <span v-for="(category, index) in allCategory" :key="index">
-                        <el-button>{{category}}</el-button>
+                        <el-button @click="choseCategoryIdx = index"
+                                   :class="{isActive: index === choseCategoryIdx}">
+                            {{category}}
+                        </el-button>
                     </span>
                 </div>
 
                 <div class="rowFour">
                     <span>难度：</span>
                     <span v-for="(difficult, index) in allDifficult" :key="index">
-                        <el-button >{{difficult}}</el-button>
+                         <el-button @click="choseDifficultIdx = index"
+                                    :class="{isActive: index === choseDifficultIdx}">
+                            {{difficult}}
+                        </el-button>
                     </span>
                 </div>
 
@@ -54,7 +61,15 @@
           allDirection: ['全部', '前端开发', '后端开发', '移动开发', '算法&数学', '前沿技术', '云计算&大数据', ],
           allCategory: ['全部', '微服务', '区块链', '以太坊', '人工智能', '机器学习', ],
           allDifficult: ['全部', '入门', '初级', '中级', '高级'],
+          choseDirectionIdx: 0,
+          choseCategoryIdx: 0,
+          choseDifficultIdx: 0,
         }
+    },
+    methods: {
+      active: {
+
+      }
     }
   }
 </script>
@@ -90,10 +105,31 @@
 
                 .rowTwo {
                     margin: 15px 0 15px 0;
+                    padding-bottom: 15px;
+                    border-bottom: 1px solid #edf1f2;
+                }
+
+                .rowThree {
+                    margin: 15px 0 15px 0;
+                    padding-bottom: 15px;
+                    border-bottom: 1px solid #edf1f2;
+                }
+
+                .rowFour {
+                    margin: 15px 0 15px 0;
+                    padding-bottom: 15px;
+                    border-bottom: 1px solid #edf1f2;
                 }
 
                 button {
                     border: none;
+                    margin-right: 16px;
+                }
+
+                .isActive {
+                    border-radius: 4px;
+                    background-color: #ECF5FF;
+                    color: #409EFF;
                 }
             }
 
