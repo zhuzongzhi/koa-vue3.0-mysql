@@ -5,6 +5,7 @@ const bodyParser = require('koa-bodyparser');
 const koaLogger = require('koa-logger');
 const session = require('koa-session-minimal');
 const MysqlStore = require('koa-mysql-session');
+const cors = require('koa2-cors');
 
 const config = require('./config');
 const controller = require('./controller');
@@ -18,6 +19,9 @@ const sessionMysqlConfig= {
   database: config.database.DATABASE,
   host: config.database.HOST,
 };
+
+// 允许跨域
+app.use(cors());
 
 // 配置session中间件
 app.use(session({
