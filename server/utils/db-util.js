@@ -67,7 +67,7 @@ let deleteDataById = function( table, id ) {
 
 
 let select = function( table, keys ) {
-  let  _sql =  "SELECT ?? FROM ?? "
+  let  _sql =  "SELECT ?? FROM ?? where deleted = 0";
   return query( _sql, [ keys, table ] )
 }
 
