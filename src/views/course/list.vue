@@ -13,7 +13,7 @@
                 </div>
 
                 <div class="rowTwo">
-                    <span>方向：</span>
+                    <span class="subtitle">方向：</span>
                     <span v-for="(direction, index) in allDirection" :key="index">
                         <el-button @click="choseDirectionIdx = index"
                                 :class="{isActive: index === choseDirectionIdx}">
@@ -23,7 +23,7 @@
                 </div>
 
                 <div class="rowThree">
-                    <span>分类：</span>
+                    <span class="subtitle">分类：</span>
                     <span v-for="(category, index) in allCategory" :key="index">
                         <el-button @click="choseCategoryIdx = index"
                                    :class="{isActive: index === choseCategoryIdx}">
@@ -33,7 +33,7 @@
                 </div>
 
                 <div class="rowFour">
-                    <span>难度：</span>
+                    <span class="subtitle">难度：</span>
                     <span v-for="(difficult, index) in allDifficult" :key="index">
                          <el-button @click="choseDifficultIdx = index"
                                     :class="{isActive: index === choseDifficultIdx}">
@@ -67,9 +67,7 @@
         }
     },
     methods: {
-      active: {
 
-      }
     }
   }
 </script>
@@ -123,6 +121,17 @@
 
                 button {
                     border: none;
+                    margin: 5px 16px 5px 0;
+                }
+
+                .subtitle {
+                    width: 52px;
+                    height: 20px;
+                    line-height: 30px;
+                    font-weight: 700;
+                    font-size: 14px;
+                    color: #07111b;
+                    text-align: left;
                     margin-right: 16px;
                 }
 
