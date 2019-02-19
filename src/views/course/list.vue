@@ -71,10 +71,10 @@
 
                                     <div class="courseBriefIntro">{{course.brief_introduction}}</div>
 
-                                    <div class="bottom clearfix">
+                                    <!--<div class="bottom clearfix">
                                         <time class="time">{{ new Date() }}</time>
                                         <el-button type="text" class="button">详情</el-button>
-                                    </div>
+                                    </div>-->
                                 </div>
                             </el-card>
                         </el-col>
