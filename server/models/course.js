@@ -34,22 +34,59 @@ const course = {
    */
   async queryCourseList(query) {
     let _sql = `
-      select * 
-      from course_list where 1 = 1 and deleted = 0 
+      select a.*, b.name as direction_name 
+      from course_list a left join course_difficult b on a.direction_id = b.id
+      where 1 = 1 and a.deleted = 0 
     `;
-    if (!query.sort) {
-      _sql += ` order by create_time DESC `;
-    } else {
-      _sql += ` order by study_num DESC `;
+
+    if (parseInt(query.direction_id)) {
+      _sql += ` and a.direction_id = ${query.direction_id} `;
     }
+    if (parseInt(query.category_id)) {
+      _sql += ` and a.category_id = ${query.category_id} `;
+    }
+    if (parseInt(query.difficult_id)) {
+      _sql += ` and a.difficult_id = ${query.difficult_id} `;
+    }
+
+    if (query.keyword) {
+      _sql += ` and a.name like '%${query.keyword}%' `;
+    }
+
+    if (!parseInt(query.isLastest)) {
+      _sql += ` order by a.create_time DESC `;
+    } else {
+      _sql += ` order by a.study_num DESC `;
+    }
+
     _sql += ` LIMIT ${(query.pageNo-1)*query.pageSize} , ${query.pageSize} `;
     console.log('_sql', _sql);
 
     return await dbUtils.query(_sql);
   },
 
-  async queryCourseListCount() {
-    return await dbUtils.count('course_list');
+  async queryCourseListCount(query) {
+    let _sql = `
+      select count(*) as count 
+      from course_list where 1 = 1 and deleted = 0 
+    `;
+
+    if (parseInt(query.direction_id)) {
+      _sql += ` and direction_id = ${query.direction_id} `;
+    }
+    if (parseInt(query.category_id)) {
+      _sql += ` and category_id = ${query.category_id} `;
+    }
+    if (parseInt(query.difficult_id)) {
+      _sql += ` and difficult_id = ${query.difficult_id} `;
+    }
+
+    if (query.keyword) {
+      _sql += ` and name like '%${query.keyword}%' `;
+    }
+    console.log('_sql', _sql);
+
+    return await dbUtils.query(_sql);
   },
 };
 

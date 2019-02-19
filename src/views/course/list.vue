@@ -59,9 +59,14 @@
                     <el-col :span="4" v-for="(course, index) in allCourses" :key="index"
                             :offset="(index > 0 && index%5) ? 1 : 0" style="margin-bottom: 15px;">
                         <el-card :body-style="{ padding: '0px', height: '260px' }">
-                            <img :src="course.imgUrl" class="image">
+                            <img src="../../assets/course/demo3.jpg" class="image">
                             <div style="padding: 14px;">
-                                <span>{{course.name}}</span>
+                                <span class="courseName">{{course.name}}</span>
+                                <span class="courseDirectionName">{{course.direction_name}}</span>
+                                <i class="iconfont icon-redupaixu"></i>
+                                <span class="courseStudyNum">{{course.study_num}}</span>
+                                <span class="courseBriefIntro">{{course.brief_introduction}}</span>
+
                                 <div class="bottom clearfix">
                                     <time class="time">{{ new Date() }}</time>
                                     <el-button type="text" class="button">详情</el-button>
@@ -75,7 +80,7 @@
                         style="width: 30%; margin: 0 auto; "
                         @size-change="handleSizeChange"
                         @current-change="handleCurrentChange"
-                        :current-page="currentPage4"
+                        :current-page="pageNo"
                         :page-sizes="[100, 200, 300, 400]"
                         :page-size="100"
                         layout="total, sizes, prev, pager, next, jumper"
@@ -104,92 +109,25 @@
           choseCategoryIdx: 0,
           choseDifficultIdx: 0,
           isLastest: true,
-          allCourses: [
-            {
-              name: '社交类App设计入门',
-              briefIntroduction: '综合案例带你详细透析社区产品交互设计',
-              imgUrl: require("../../assets/course/demo1.jpg"),
-              keywords: ['App', '产品交互'],
-              difficultIdx: '初级',
-              hot: 1290,
-            }, {
-              name: '自然语言处理（NLP）入门与实践',
-              briefIntroduction: '一步步教你轻松学习自然语言处理基础与实践',
-              imgUrl: require("../../assets/course/demo2.jpg"),
-              keywords: ['机器学习', '自然语言处理'],
-              difficultIdx: '初级',
-              hot: 2314,
-            },{
-              name: '社交类App设计入门',
-              briefIntroduction: '综合案例带你详细透析社区产品交互设计',
-              imgUrl: require("../../assets/course/demo1.jpg"),
-              keywords: ['App', '产品交互'],
-              difficultIdx: '初级',
-              hot: 1290,
-            }, {
-              name: '自然语言处理（NLP）入门与实践',
-              briefIntroduction: '一步步教你轻松学习自然语言处理基础与实践',
-              imgUrl: require("../../assets/course/demo2.jpg"),
-              keywords: ['机器学习', '自然语言处理'],
-              difficultIdx: '初级',
-              hot: 2314,
-            },{
-              name: '社交类App设计入门',
-              briefIntroduction: '综合案例带你详细透析社区产品交互设计',
-              imgUrl: require("../../assets/course/demo1.jpg"),
-              keywords: ['App', '产品交互'],
-              difficultIdx: '初级',
-              hot: 1290,
-            }, {
-              name: '自然语言处理（NLP）入门与实践',
-              briefIntroduction: '一步步教你轻松学习自然语言处理基础与实践',
-              imgUrl: require("../../assets/course/demo2.jpg"),
-              keywords: ['机器学习', '自然语言处理'],
-              difficultIdx: '初级',
-              hot: 2314,
-            },{
-              name: '社交类App设计入门',
-              briefIntroduction: '综合案例带你详细透析社区产品交互设计',
-              imgUrl: require("../../assets/course/demo1.jpg"),
-              keywords: ['App', '产品交互'],
-              difficultIdx: '初级',
-              hot: 1290,
-            }, {
-              name: '自然语言处理（NLP）入门与实践',
-              briefIntroduction: '一步步教你轻松学习自然语言处理基础与实践',
-              imgUrl: require("../../assets/course/demo2.jpg"),
-              keywords: ['机器学习', '自然语言处理'],
-              difficultIdx: '初级',
-              hot: 2314,
-            },{
-              name: '社交类App设计入门',
-              briefIntroduction: '综合案例带你详细透析社区产品交互设计',
-              imgUrl: require("../../assets/course/demo1.jpg"),
-              keywords: ['App', '产品交互'],
-              difficultIdx: '初级',
-              hot: 1290,
-            }, {
-              name: '自然语言处理（NLP）入门与实践',
-              briefIntroduction: '一步步教你轻松学习自然语言处理基础与实践',
-              imgUrl: require("../../assets/course/demo2.jpg"),
-              keywords: ['机器学习', '自然语言处理'],
-              difficultIdx: '初级',
-              hot: 2314,
-            },
-          ],
-          currentPage4: 1,
+          allCourses: [],
 
+          pageSize: 10,
+          pageNo: 1,
+          totalCount: 0,
         }
     },
     methods: {
+      // 初始化
       async init() {
         let vm = this;
 
         await vm.queryCourseDirection();
         await vm.queryAllCourseCategory();
         await vm.queryCourseDifficult();
+        await vm.queryCourseList();
       },
 
+      // 查询课程方向
       async queryCourseDirection() {
         let vm = this;
 
@@ -207,6 +145,7 @@
           });
       },
 
+      // 查询课程分类
       async queryAllCourseCategory() {
         let vm = this;
 
@@ -228,6 +167,7 @@
           });
       },
 
+      // 查询课程难度
       async queryCourseDifficult() {
         let vm = this;
 
@@ -243,13 +183,23 @@
           }).catch((err) => {console.log(err)})
       },
 
+      // 处理分页,每页长度
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
-      },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+        let vm = this;
+        vm.pageSize = val;
+        vm.queryCourseList();
       },
 
+      // 处理分页，当前页
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+        let vm = this;
+        vm.pageNo = val;
+        vm.queryCourseList();
+      },
+
+      // 点击课程方向
       handleDirection (index) {
         let vm = this;
         vm.choseDirectionIdx = index;
@@ -257,7 +207,34 @@
         vm.queryAllCourseCategory();
       },
 
-      
+      // 查询课程列表
+      queryCourseList () {
+        let vm = this;
+        let params = {
+          direction_id: vm.allDirection[vm.choseDirectionIdx].id,
+          category_id: vm.allCategory[vm.choseCategoryIdx].id,
+          difficult_id: vm.allDifficult[vm.choseDifficultIdx].id,
+
+          keyword: vm.keyword,
+          isLastest: vm.isLastest ? 0 : 1,
+          pageSize: vm.pageSize,
+          pageNo: vm.pageNo,
+        };
+
+        this.$store
+          .dispatch("QueryCourseList", params)
+          .then(res => {
+            console.log(res);
+
+            let data = res.data;
+            if (data) {
+              vm.allCourses = [];
+              data.course_list.forEach(item => {
+                vm.allCourses.push(item);
+              });
+            }
+          }).catch(err => {console.log(err)})
+      },
 
     },
     mounted() {
@@ -356,6 +333,44 @@
 
                 .image {
                     width: 100%;
+                }
+
+                .courseName {
+                    font-size: 16px;
+                    color: #07111b;
+                    line-height: 24px;
+                    word-wrap: break-word;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    max-height: 46px;
+                    transition: all .3s;
+                }
+
+                .courseDirectionName {
+                    font-size: 12px;
+                    color: #93999f;
+                    line-height: 24px;
+                    margin-top: 8px;
+                    font-weight: 400;
+                }
+
+                .courseStudyNum {
+                    font-size: 12px;
+                    color: #93999f;
+                    line-height: 24px;
+                    margin-top: 8px;
+                    font-weight: 400;
+                }
+
+                .courseBriefIntro {
+                    font-size: 12px;
+                    color: #93999f;
+                    line-height: 24px;
+                    margin-top: 8px;
+                    font-weight: 400;
                 }
             }
         }

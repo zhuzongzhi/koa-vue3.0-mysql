@@ -25,3 +25,11 @@ export function queryCourseDifficult() {
     params: {}
   })
 }
+
+export function queryCourseList(params) {
+  return request({
+    url: '/course/queryCourseList',
+    method: 'get',
+    params: params
+  })
+}

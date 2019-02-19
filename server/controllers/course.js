@@ -82,6 +82,11 @@ var fn_queryCourseList = async (ctx, next) => {
   query.pageNo = query.pageNo || 1;
   query.pageSize = query.pageSize || 10;
 
+  // 参数校验
+  if (!query.difficult_id || !query.direction_id || !query.category_id) {
+    throw new Error('参数校验失败');
+  }
+
   let result = {
     success: false,
     message: '',

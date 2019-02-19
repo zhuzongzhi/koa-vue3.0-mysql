@@ -24,8 +24,8 @@ const course = {
 
   async queryCourseList(query) {
     let course_list = await courseModel.queryCourseList(query);
-    let totalCount = await courseModel.queryCourseListCount();
-    return {course_list, totalCount};
+    let totalCount = await courseModel.queryCourseListCount(query);
+    return {course_list, totalCount: totalCount[0].count};
   },
 };
 
