@@ -7,7 +7,8 @@
                     <img src="../../assets/course/logo-course.png" alt="Logo" />
                     <img src="../../assets/course/course-top.png" alt="Logo" />
 
-                    <el-input placeholder="搜索感兴趣的内容" v-model="keyword" class="searchKey">
+                    <el-input placeholder="搜索感兴趣的内容" v-model="keyword" class="searchKey"
+                              @keyup.enter.native='keySearch' clearable >
                         <i slot="prefix" class="el-input__icon el-icon-search"></i>
                     </el-input>
                 </div>
@@ -25,7 +26,7 @@
                 <div class="rowThree">
                     <span class="subtitle">分类：</span>
                     <span v-for="(category, index) in allCategory" :key="index">
-                        <el-button @click="choseCategoryIdx = index"
+                        <el-button @click="handleCategory(index)"
                                    :class="{isActive: index === choseCategoryIdx}">
                             {{category.name}}
                         </el-button>
@@ -35,7 +36,7 @@
                 <div class="rowFour">
                     <span class="subtitle">难度：</span>
                     <span v-for="(difficult, index) in allDifficult" :key="index">
-                         <el-button @click="choseDifficultIdx = index"
+                         <el-button @click="handleDifficult(index)"
                                     :class="{isActive: index === choseDifficultIdx}">
                             {{difficult.name}}
                         </el-button>
@@ -48,9 +49,9 @@
         <!--课程列表-->
         <div class="list-content">
             <div>
-                <el-button round @click="isLastest = true" size="mini"
+                <el-button round @click="handleNew" size="mini"
                            :class="{isActive: isLastest}">最新</el-button>
-                <el-button round @click="isLastest = false" size="mini"
+                <el-button round @click="handleHot" size="mini"
                            :class="{isActive: !isLastest}">最热</el-button>
             </div>
 
@@ -62,10 +63,12 @@
                             <img src="../../assets/course/demo3.jpg" class="image">
                             <div style="padding: 14px;">
                                 <span class="courseName">{{course.name}}</span>
-                                <span class="courseDirectionName">{{course.direction_name}}</span>
+                                <span class="courseDirectionName">{{course.difficult_name}}</span>
+
                                 <i class="iconfont icon-redupaixu"></i>
                                 <span class="courseStudyNum">{{course.study_num}}</span>
-                                <span class="courseBriefIntro">{{course.brief_introduction}}</span>
+
+                                <div class="courseBriefIntro">{{course.brief_introduction}}</div>
 
                                 <div class="bottom clearfix">
                                     <time class="time">{{ new Date() }}</time>
@@ -81,10 +84,10 @@
                         @size-change="handleSizeChange"
                         @current-change="handleCurrentChange"
                         :current-page="pageNo"
-                        :page-sizes="[100, 200, 300, 400]"
-                        :page-size="100"
-                        layout="total, sizes, prev, pager, next, jumper"
-                        :total="400">
+                        :page-sizes="[10, 20, 30, 50, 100]"
+                        :page-size="pageSize"
+                        layout="total, prev, pager, next, jumper"
+                        :total="totalCount">
                 </el-pagination>
             </div>
         </div>
@@ -149,7 +152,7 @@
       async queryAllCourseCategory() {
         let vm = this;
 
-        this.$store
+        await this.$store
           .dispatch('QueryAllCourseCategory', vm.allDirection[vm.choseDirectionIdx].id)
           .then(res => {
             console.log(res);
@@ -200,15 +203,40 @@
       },
 
       // 点击课程方向
-      handleDirection (index) {
+      async handleDirection (index) {
         let vm = this;
         vm.choseDirectionIdx = index;
         vm.allCategory = [{id: 0, name: '全部'}];
-        vm.queryAllCourseCategory();
+        await vm.queryAllCourseCategory();
+        await vm.queryCourseList();
+      },
+
+      // 点击课程分类
+      async handleCategory (index) {
+        let vm = this;
+        vm.choseCategoryIdx = index;
+        vm.queryCourseList();
+      },
+
+      // 点击课程难度
+      async handleDifficult (index) {
+        let vm = this;
+        vm.choseDifficultIdx = index;
+        vm.queryCourseList();
+      },
+
+      // 关键词搜索
+      keySearch () {
+        let vm = this;
+
+        if (vm.keyword) {
+          vm.keyword = vm.keyword.trim();
+        }
+        vm.queryCourseList();
       },
 
       // 查询课程列表
-      queryCourseList () {
+      async queryCourseList () {
         let vm = this;
         let params = {
           direction_id: vm.allDirection[vm.choseDirectionIdx].id,
@@ -221,7 +249,7 @@
           pageNo: vm.pageNo,
         };
 
-        this.$store
+        await this.$store
           .dispatch("QueryCourseList", params)
           .then(res => {
             console.log(res);
@@ -232,8 +260,26 @@
               data.course_list.forEach(item => {
                 vm.allCourses.push(item);
               });
+
+              vm.totalCount = data.totalCount;
             }
           }).catch(err => {console.log(err)})
+      },
+
+      // 最新
+      handleNew () {
+        let vm = this;
+        vm.isLastest = true;
+        vm.pageNo = 1;
+        vm.queryCourseList();
+      },
+
+      // 最热
+      handleHot () {
+        let vm = this;
+        vm.isLastest = false;
+        vm.pageNo = 1;
+        vm.queryCourseList();
       },
 
     },
@@ -355,6 +401,7 @@
                     line-height: 24px;
                     margin-top: 8px;
                     font-weight: 400;
+                    margin-right: 10px;
                 }
 
                 .courseStudyNum {
@@ -369,7 +416,8 @@
                     font-size: 12px;
                     color: #93999f;
                     line-height: 24px;
-                    margin-top: 8px;
+                    margin-top: 2px;
+                    margin-bottom: 2px;
                     font-weight: 400;
                 }
             }

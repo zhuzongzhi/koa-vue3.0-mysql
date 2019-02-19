@@ -34,8 +34,8 @@ const course = {
    */
   async queryCourseList(query) {
     let _sql = `
-      select a.*, b.name as direction_name 
-      from course_list a left join course_difficult b on a.direction_id = b.id
+      select a.*, b.name as difficult_name 
+      from course_list a left join course_difficult b on a.difficult_id = b.id
       where 1 = 1 and a.deleted = 0 
     `;
 
