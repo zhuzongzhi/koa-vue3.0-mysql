@@ -1,4 +1,4 @@
-import { queryCourseDirection } from '@/api/course'
+import { queryCourseDirection, queryAllCourseCategory, queryCourseDifficult} from '@/api/course'
 
 const course = {
   state: {
@@ -20,6 +20,29 @@ const course = {
         })
       })
     },
+
+    // 获取课程分类信息
+    QueryAllCourseCategory({commit, state}, courseDirectionId) {
+      return new Promise((resolve, reject) => {
+        queryAllCourseCategory(courseDirectionId).then(response => {
+          resolve(response);
+        }).catch(error => {
+          reject(error);
+        })
+      })
+    },
+
+    // 获取课程难度信息
+    QueryCourseDifficult({commit, state}) {
+      return new Promise((resolve, reject) => {
+        queryCourseDifficult().then(response => {
+          resolve(response);
+        }).catch(error => {
+          reject(error);
+        })
+      })
+    },
+
   }
 };
 

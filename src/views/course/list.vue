@@ -15,7 +15,7 @@
                 <div class="rowTwo">
                     <span class="subtitle">方向：</span>
                     <span v-for="(direction, index) in allDirection" :key="index">
-                        <el-button @click="choseDirectionIdx = index"
+                        <el-button @click="handleDirection(index)"
                                 :class="{isActive: index === choseDirectionIdx}">
                             {{direction.name}}
                         </el-button>
@@ -27,7 +27,7 @@
                     <span v-for="(category, index) in allCategory" :key="index">
                         <el-button @click="choseCategoryIdx = index"
                                    :class="{isActive: index === choseCategoryIdx}">
-                            {{category}}
+                            {{category.name}}
                         </el-button>
                     </span>
                 </div>
@@ -37,7 +37,7 @@
                     <span v-for="(difficult, index) in allDifficult" :key="index">
                          <el-button @click="choseDifficultIdx = index"
                                     :class="{isActive: index === choseDifficultIdx}">
-                            {{difficult}}
+                            {{difficult.name}}
                         </el-button>
                     </span>
                 </div>
@@ -97,9 +97,9 @@
     data() {
         return {
           keyword: '',
-          allDirection: [],
-          allCategory: ['全部', '微服务', '区块链', '以太坊', '人工智能', '机器学习', ],
-          allDifficult: ['全部', '入门', '初级', '中级', '高级'],
+          allDirection: [{id: 0, name: '全部'}],
+          allCategory: [{id: 0, name: '全部'}],
+          allDifficult: [{id: 0, name: '全部'}],
           choseDirectionIdx: 0,
           choseCategoryIdx: 0,
           choseDifficultIdx: 0,
@@ -193,7 +193,7 @@
       async queryCourseDirection() {
         let vm = this;
 
-        this.$store
+        await this.$store
           .dispatch("QueryCourseDirection")
           .then((res) => {
             console.log('res', res);
@@ -208,11 +208,39 @@
       },
 
       async queryAllCourseCategory() {
+        let vm = this;
 
+        this.$store
+          .dispatch('QueryAllCourseCategory', vm.allDirection[vm.choseDirectionIdx].id)
+          .then(res => {
+            console.log(res);
+
+            let data = res.data;
+            if (data) {
+              data.forEach(item => {
+                vm.allCategory.push(item);
+              })
+            }
+
+          })
+          .catch(() => {
+
+          });
       },
 
       async queryCourseDifficult() {
+        let vm = this;
 
+        this.$store
+          .dispatch("QueryCourseDifficult")
+          .then(res => {
+            console.log(res);
+            if (res.data) {
+              res.data.forEach(item => {
+                vm.allDifficult.push(item);
+              })
+            }
+          }).catch((err) => {console.log(err)})
       },
 
       handleSizeChange(val) {
@@ -222,25 +250,14 @@
         console.log(`当前页: ${val}`);
       },
 
-      /*handleLogin() {
-        this.$refs.loginForm.validate(valid => {
-          if (valid) {
-            this.loading = true;
-            this.$store
-              .dispatch("Login", this.loginForm)
-              .then(() => {
-                this.loading = false;
-                this.$router.push({ path: "/" });
-              })
-              .catch(() => {
-                this.loading = false;
-              });
-          } else {
-            console.log("error submit!!");
-            return false;
-          }
-        });
-      }*/
+      handleDirection (index) {
+        let vm = this;
+        vm.choseDirectionIdx = index;
+        vm.allCategory = [{id: 0, name: '全部'}];
+        vm.queryAllCourseCategory();
+      },
+
+      
 
     },
     mounted() {

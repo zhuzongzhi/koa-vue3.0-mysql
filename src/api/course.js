@@ -7,3 +7,21 @@ export function queryCourseDirection() {
     params: {}
   })
 }
+
+export function queryAllCourseCategory(courseDirectionId) {
+  return request({
+    url: '/course/queryAllCourseCategory',
+    method: 'get',
+    params: {
+      courseDirectionId,
+    }
+  })
+}
+
+export function queryCourseDifficult() {
+  return request({
+    url: '/course/queryCourseDifficult',
+    method: 'get',
+    params: {}
+  })
+}

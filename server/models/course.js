@@ -14,7 +14,7 @@ const course = {
     let _sql = `
       select * from course_category where 1 = 1 and deleted = 0 
     `;
-    if (courseDirectionId) {
+    if (parseInt(courseDirectionId)) {
       _sql += ` and direction_id = "${courseDirectionId}" `;
     }
     console.log('_sql', _sql);
@@ -38,9 +38,9 @@ const course = {
       from course_list where 1 = 1 and deleted = 0 
     `;
     if (!query.sort) {
-      _sql = ` order by create_time DESC `;
+      _sql += ` order by create_time DESC `;
     } else {
-      _sql = ` order by study_num DESC `;
+      _sql += ` order by study_num DESC `;
     }
     _sql += ` LIMIT ${(query.pageNo-1)*query.pageSize} , ${query.pageSize} `;
     console.log('_sql', _sql);
