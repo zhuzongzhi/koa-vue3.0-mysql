@@ -21,6 +21,12 @@ const course = {
   async queryCourseDifficult() {
     return await courseModel.queryCourseDifficult();
   },
+
+  async queryCourseList(query) {
+    let course_list = await courseModel.queryCourseList(query);
+    let totalCount = await courseModel.queryCourseListCount();
+    return {course_list, totalCount};
+  },
 };
 
 module.exports = course;

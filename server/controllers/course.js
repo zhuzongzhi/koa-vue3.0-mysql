@@ -73,8 +73,38 @@ var fn_queryCourseDifficult = async (ctx, next) => {
   ctx.body = result;
 };
 
+/**
+ * 获取课程列表
+ * 分页处理
+ */
+var fn_queryCourseList = async (ctx, next) => {
+  let query = ctx.query;
+  query.pageNo = query.pageNo || 1;
+  query.pageSize = query.pageSize || 10;
+
+  let result = {
+    success: false,
+    message: '',
+    data: null,
+    code: ''
+  };
+
+  let allCourseList = await courseService.queryCourseList(query);
+  if ( allCourseList ) {
+    result.data = allCourseList;
+    result.success = true;
+    result.code = 1;
+  } else {
+    result.message = courseCode.FAIL_GET_COURSE_List;
+  }
+
+  ctx.body = result;
+};
+
 module.exports = {
   'GET /course/getCourseDirection': fn_getCourseDirection,
   'GET /course/queryAllCourseCategory': fn_queryAllCourseCategory,
   'GET /course/queryCourseDifficult': fn_queryCourseDifficult,
+
+  'GET /course/queryCourseList': fn_queryCourseList,
 };
