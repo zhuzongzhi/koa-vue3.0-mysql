@@ -48,52 +48,58 @@
 
         <!--课程列表-->
         <div class="list-content">
-            <div>
-                <el-button round @click="handleNew" size="mini"
-                           :class="{isActive: isLastest}">最新</el-button>
-                <el-button round @click="handleHot" size="mini"
-                           :class="{isActive: !isLastest}">最热</el-button>
+            <div v-show="!noRecord">
+                <div>
+                    <el-button round @click="handleNew" size="mini"
+                               :class="{isActive: isLastest}">最新</el-button>
+                    <el-button round @click="handleHot" size="mini"
+                               :class="{isActive: !isLastest}">最热</el-button>
+                </div>
+
+                <div class="list-card">
+                    <el-row>
+                        <el-col :span="4" v-for="(course, index) in allCourses" :key="index"
+                                :offset="(index > 0 && index%5) ? 1 : 0" style="margin-bottom: 15px;">
+                            <el-card :body-style="{ padding: '0px', height: '260px' }">
+                                <img src="../../assets/course/demo3.jpg" class="image">
+                                <div style="padding: 14px;">
+                                    <span class="courseName">{{course.name}}</span>
+                                    <span class="courseDirectionName">{{course.difficult_name}}</span>
+
+                                    <i class="iconfont icon-redupaixu"></i>
+                                    <span class="courseStudyNum">{{course.study_num}}</span>
+
+                                    <div class="courseBriefIntro">{{course.brief_introduction}}</div>
+
+                                    <div class="bottom clearfix">
+                                        <time class="time">{{ new Date() }}</time>
+                                        <el-button type="text" class="button">详情</el-button>
+                                    </div>
+                                </div>
+                            </el-card>
+                        </el-col>
+                    </el-row>
+
+                    <el-pagination
+                            style="width: 30%; margin: 0 auto; "
+                            @size-change="handleSizeChange"
+                            @current-change="handleCurrentChange"
+                            :current-page="pageNo"
+                            :page-sizes="[10, 20, 30, 50, 100]"
+                            :page-size="pageSize"
+                            layout="total, prev, pager, next, jumper"
+                            :total="totalCount">
+                    </el-pagination>
+                </div>
             </div>
 
-            <div class="list-card">
-                <el-row>
-                    <el-col :span="4" v-for="(course, index) in allCourses" :key="index"
-                            :offset="(index > 0 && index%5) ? 1 : 0" style="margin-bottom: 15px;">
-                        <el-card :body-style="{ padding: '0px', height: '260px' }">
-                            <img src="../../assets/course/demo3.jpg" class="image">
-                            <div style="padding: 14px;">
-                                <span class="courseName">{{course.name}}</span>
-                                <span class="courseDirectionName">{{course.difficult_name}}</span>
-
-                                <i class="iconfont icon-redupaixu"></i>
-                                <span class="courseStudyNum">{{course.study_num}}</span>
-
-                                <div class="courseBriefIntro">{{course.brief_introduction}}</div>
-
-                                <div class="bottom clearfix">
-                                    <time class="time">{{ new Date() }}</time>
-                                    <el-button type="text" class="button">详情</el-button>
-                                </div>
-                            </div>
-                        </el-card>
-                    </el-col>
-                </el-row>
-
-                <el-pagination
-                        style="width: 30%; margin: 0 auto; "
-                        @size-change="handleSizeChange"
-                        @current-change="handleCurrentChange"
-                        :current-page="pageNo"
-                        :page-sizes="[10, 20, 30, 50, 100]"
-                        :page-size="pageSize"
-                        layout="total, prev, pager, next, jumper"
-                        :total="totalCount">
-                </el-pagination>
+            <div v-show="noRecord" class="noRecordCls">
+                暂无数据
             </div>
         </div>
 
         <div class="footer">
-            <p>Copyright © 2019 imooc.com All Rights Reserved | 京ICP备 12003892号-11</p>
+            <p>Copyright © 2019 windmill.com All Rights Reserved | 京ICP备 12003892号-11</p>
             <p>如有侵权，请及时联系网站管理员立即删除。</p>
         </div>
     </div>
@@ -117,6 +123,8 @@
           pageSize: 10,
           pageNo: 1,
           totalCount: 0,
+
+          noRecord: false,
         }
     },
     methods: {
@@ -205,8 +213,12 @@
       // 点击课程方向
       async handleDirection (index) {
         let vm = this;
+
         vm.choseDirectionIdx = index;
         vm.allCategory = [{id: 0, name: '全部'}];
+        vm.choseCategoryIdx = 0;
+        vm.choseDifficultIdx = 0;
+
         await vm.queryAllCourseCategory();
         await vm.queryCourseList();
       },
@@ -214,7 +226,10 @@
       // 点击课程分类
       async handleCategory (index) {
         let vm = this;
+
         vm.choseCategoryIdx = index;
+        vm.choseDifficultIdx = 0;
+
         vm.queryCourseList();
       },
 
@@ -262,6 +277,8 @@
               });
 
               vm.totalCount = data.totalCount;
+
+              vm.noRecord = !vm.totalCount;
             }
           }).catch(err => {console.log(err)})
       },
@@ -366,7 +383,14 @@
 
         .list-content {
             width: 80%;
+            min-height: 600px;
             margin: 0 auto;
+
+            .noRecordCls {
+                text-align: center;
+                font-size: 18px;
+                color: grey;
+            }
 
             .isActive {
                 background-color: #ECF5FF;
