@@ -44,10 +44,18 @@ export default {
     line-height: 50px;
     margin-left: 10px;
     color: rgba(255,255,255,.5);
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     
     .no-redirect {
       color: #97a8be;
       cursor: text;
     }
+  }
+
+  a {
+    color: rgba(255, 255, 255, 0.5);
   }
 </style>
