@@ -26,12 +26,12 @@ export default {
   },
   methods: {
     getBreadcrumb() {
-      let matched = this.$route.matched.filter(item => item.name)
-      const first = matched[0]
-      if (first && first.name !== 'dashboard') {
-        matched = [{ path: '/dashboard', meta: { title: 'Dashboard' }}].concat(matched)
+      let matched = this.$route.matched.filter(item => item.name);
+      const first = matched[0];
+      if (first && first.meta && first.meta.title !== '课程') {
+        matched = [{ path: '/', meta: { title: '课程' }}].concat(matched);
       }
-      this.levelList = matched
+      this.levelList = matched;
     }
   }
 }
@@ -43,6 +43,8 @@ export default {
     font-size: 14px;
     line-height: 50px;
     margin-left: 10px;
+    color: rgba(255,255,255,.5);
+    
     .no-redirect {
       color: #97a8be;
       cursor: text;

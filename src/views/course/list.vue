@@ -59,8 +59,11 @@
                 <div class="list-card">
                     <el-row>
                         <el-col :span="4" v-for="(course, index) in allCourses" :key="index"
-                                :offset="(index > 0 && index%5) ? 1 : 0" style="margin-bottom: 15px;">
-                            <el-card :body-style="{ padding: '0px', height: '260px' }">
+                                :offset="(index > 0 && index%5) ? 1 : 0"
+                                style="margin-bottom: 15px;cursor: pointer;"
+                                @click.native="viewDetail(course.id)"
+                                >
+                            <el-card :body-style="{ padding: '0px', height: '260px' }" >
                                 <img src="../../assets/course/demo3.jpg" class="image">
                                 <div style="padding: 14px;">
                                     <span class="courseName">{{course.name}}</span>
@@ -297,6 +300,12 @@
         vm.isLastest = false;
         vm.pageNo = 1;
         vm.queryCourseList();
+      },
+
+      // 查看详情
+      viewDetail(courseId) {
+        let vm = this;
+        vm.$router.push({path: '/courseDetail', query: {id: courseId}});
       },
 
     },

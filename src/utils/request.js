@@ -14,7 +14,7 @@ import { getToken } from '@/utils/auth'
 // }
 const service = axios.create({
     // baseURL: "http://193.112.153.155:3001", // api的base_url
-  baseURL: "http://47.101.206.231:3001",
+  baseURL: "http://localhost:3001",
   timeout: 5000 // 请求超时时间
 });
 
