@@ -1,5 +1,37 @@
 <template>
     <div class="course-list-container">
+        <!--头部-->
+        <div class="header">
+            <div class="header-inner">
+                <el-row>
+                    <el-col :offset="23" :span="1" v-show="!isLogin" class="loginCls">
+                        <span @click="loginIn" class="login" style="cursor: pointer;">登录</span>
+                        <span style="margin-right: 5px;">/</span>
+                        <span @click="loginOut" class="login" style="font-weight: bold;cursor: pointer;">注册</span>
+                    </el-col>
+
+                    <el-col :offset="23" :span="1" v-show="isLogin">
+                        <i class="iconfont icon-tongzhi" style="margin-right: 10px;height: 40px;line-height: 40px;cursor: pointer;"></i>
+
+                        <el-popover
+                                placement="top-start"
+                                width="200"
+                                trigger="hover">
+                            <div class="userInfo">
+                                用户信息
+                            </div>
+                            <img src="../../assets/course/user.jpg" alt="头像" style="cursor: pointer;"
+                                 @mouseover="handleMouseOver"
+                                 @mouseout="handleMouseOut"
+                                 slot="reference"
+                            >
+                        </el-popover>
+
+                    </el-col>
+                </el-row>
+            </div>
+        </div>
+
         <!--搜索条件-->
         <div class="list-condition">
             <div class="list-condition-inner">
@@ -105,12 +137,26 @@
             <p>Copyright © 2019 windmill.com All Rights Reserved | 京ICP备 12003892号-11</p>
             <p>如有侵权，请及时联系网站管理员立即删除。</p>
         </div>
+
+        <el-dialog
+            :visible.sync="dialogVisible"
+            width="20%"
+            :before-close="handleDialogClose">
+            <Login ref="login" ></Login>
+        </el-dialog>
+
     </div>
 </template>
 
 <script>
+  import Login from '@/components/Login'
+
   export default {
     name: "list",
+    components: {
+      Login,
+
+    },
     data() {
         return {
           keyword: '',
@@ -128,6 +174,10 @@
           totalCount: 0,
 
           noRecord: false,
+
+          isLogin: false,
+          dialogVisible: true,
+
         }
     },
     methods: {
@@ -308,6 +358,38 @@
         vm.$router.push({path: '/courseDetail', query: {id: courseId}});
       },
 
+      // mouseOver
+      handleMouseOver() {
+        let vm = this;
+
+
+      },
+
+      // mouseout
+      handleMouseOut() {
+        let vm = this;
+
+      },
+
+      // 登录
+      loginIn () {
+        let vm = this;
+
+        vm.dialogVisible = !vm.dialogVisible;
+      },
+
+      // 注册
+      loginOut () {
+
+      },
+
+      // 弹出框关闭
+      handleDialogClose () {
+        let vm = this;
+
+        vm.dialogVisible = false;
+      },
+
     },
     mounted() {
       let vm = this;
@@ -320,6 +402,47 @@
 <style rel="stylesheet/scss" lang="scss" scoped>
     .course-list-container {
         background-color: #f3f5f7;
+
+        .header {
+            background-color: #07111b;
+            height: 40px;
+            width: 100%;
+
+            .header-inner {
+                width: 80%;
+                margin: 0 auto;
+
+                .loginCls {
+                    color: white;
+                    font-size: 12px;
+                    height: 40px;
+                    line-height: 40px;
+                    font: 'PingFang SC',"微软雅黑","Microsoft YaHei",Helvetica,"Helvetica Neue",Tahoma,Arial,sans-serif;
+
+                    .login {
+                        margin-right: 5px;
+                        font-weight: bolder;
+                    }
+
+                    .login:hover {
+                        color: red;
+                    }
+                }
+
+                div {
+                    height: 40px;
+                }
+
+                img {
+                    display: inline-block;
+                    width: 24px;
+                    height: 24px;
+                    border: 2px solid #4d5559;
+                    border-radius: 50%;
+                    vertical-align: middle;
+                }
+            }
+        }
 
         .list-condition {
             background-color: white;
